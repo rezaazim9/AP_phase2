@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="426285f1-3a5f-4bb3-81ef-6e29e1a098c4" name="Changes" comment="HUI" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="package-info" />
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;rezaazim9&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ParsaGhezelbash/RezaAP.git&quot;,
+    &quot;accountId&quot;: &quot;ebb11125-c181-4aab-b7a9-8c1ff995d105&quot;
+  }
+}</component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="importingSettings">
+      <MavenImportingSettings>
+        <option name="vmOptionsForImporter" value="-Xmx512m" />
+        <option name="workspaceImportForciblyTurnedOn" value="true" />
+      </MavenImportingSettings>
+    </option>
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="2" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 4
+}</component>
+  <component name="ProjectId" id="2e6XxiSnOjUFR9RBoq4AbG2bobW" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.WindowKill.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/ostad/IdeaProjects/AP_2",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Facets",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "settings.editor.splitter.proportion": "0.22187172",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CreateClassDialog.RecentsKey">
+      <recent name="view.menu" />
+    </key>
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Aryan\IdeaProjects\WindowKill_Phase1\src\main\resources\ui elements" />
+      <recent name="C:\Users\Aryan\IdeaProjects\WindowKill_Phase1\src\main\resources\fonts" />
+      <recent name="C:\Users\Aryan\IdeaProjects\WindowKill_Phase1\src\main\resources\effects\backgrounds" />
+      <recent name="C:\Users\Aryan\IdeaProjects\WindowKill_Phase1\src\main\resources\ui items" />
+      <recent name="C:\Users\Aryan\IdeaProjects\WindowKill_Phase1\src\main\resources" />
+    </key>
+    <key name="MoveMembersDialog.RECENTS_KEY">
+      <recent name="controller.UserInterfaceController" />
+      <recent name="controller.constants.DefaultMethods" />
+      <recent name="model.Profile" />
+      <recent name="view.menu.Message.MessageType" />
+      <recent name="view.menu.Message" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\ostad\IdeaProjects\AP_phase2\src\main\resources\character sprites" />
+      <recent name="C:\Users\ostad\IdeaProjects\AP_phase2\src\main\resources\ui elements" />
+      <recent name="C:\Users\ostad\IdeaProjects\AP_phase2\src\main\resources\effects\xp effects" />
+      <recent name="C:\Users\Aryan\IdeaProjects\WindowKill_Phase1\src\main\resources\effects\shoot effects" />
+      <recent name="C:\Users\Aryan\IdeaProjects\WindowKill_Phase1\src\main\resources\ui elements" />
+    </key>
+    <key name="IntroduceConstantDialog.RECENTS_KEY">
+      <recent name="controller.constants.Variables" />
+      <recent name="controller.constants.DimensionConstants" />
+      <recent name="controller.Constants" />
+    </key>
+    <key name="ExtractSuperBase.RECENT_KEYS">
+      <recent name="view.menu" />
+    </key>
+    <key name="MoveInnerDialog.RECENTS_KEY">
+      <recent name="model" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="WindowKill" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="org.example.Main" />
+      <module name="WindowKill_Phase1" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="426285f1-3a5f-4bb3-81ef-6e29e1a098c4" name="Changes" comment="" />
+      <created>1711226250245</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1711226250245</updated>
+      <workItem from="1720451852558" duration="19000" />
+      <workItem from="1721220388126" duration="940000" />
+      <workItem from="1721229596299" duration="27000" />
+      <workItem from="1721229645739" duration="80000" />
+      <workItem from="1721229747428" duration="37000" />
+      <workItem from="1721229862079" duration="3253000" />
+      <workItem from="1721254194582" duration="324000" />
+      <workItem from="1721254568197" duration="16463000" />
+      <workItem from="1721346280831" duration="191000" />
+      <workItem from="1721348112466" duration="185000" />
+    </task>
+    <task id="LOCAL-00001" summary="A full Pure-Java recreation of torcado's WindowKill">
+      <created>1720239537249</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1720239537249</updated>
+    </task>
+    <task id="LOCAL-00002" summary="Added skills, abilities, more sound effects.">
+      <created>1720398967972</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1720398967972</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added skills, abilities, more sound effects.">
+      <option name="closed" value="true" />
+      <created>1721220783733</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1721220783733</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Added skills, abilities, more sound effects.">
+      <option name="closed" value="true" />
+      <created>1721220807741</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1721220807741</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Added skills, abilities, more sound effects.">
+      <option name="closed" value="true" />
+      <created>1721221067683</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1721221067683</updated>
+    </task>
+    <task id="LOCAL-00006" summary="HUI">
+      <option name="closed" value="true" />
+      <created>1721246305524</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1721246305524</updated>
+    </task>
+    <task id="LOCAL-00007" summary="HUI">
+      <option name="closed" value="true" />
+      <created>1721255269242</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1721255269242</updated>
+    </task>
+    <task id="LOCAL-00008" summary="HUI">
+      <option name="closed" value="true" />
+      <created>1721346156194</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1721346156194</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State>
+              <option name="CUSTOM_BOOLEAN_PROPERTIES">
+                <map>
+                  <entry key="Show.Git.Branches" value="true" />
+                </map>
+              </option>
+            </State>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="A full Pure-Java recreation of torcado's WindowKill" />
+    <MESSAGE value="Added skills, abilities, more sound effects!" />
+    <MESSAGE value="Added skills, abilities, more sound effects." />
+    <MESSAGE value="HUI" />
+    <option name="LAST_COMMIT_MESSAGE" value="HUI" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NullPointerException" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/WindowKill_Phase1$WindowKill.ic" NAME="WindowKill Coverage Results" MODIFIED="1720398272402" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" />
+  </component>
+</project>
