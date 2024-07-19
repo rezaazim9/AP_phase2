@@ -6,7 +6,7 @@ public enum WaveConstants {
     public int getValue() {
         return switch (this) {
             case MIN_ENEMY_SPAWN_RADIUS -> 500;
-            case MAX_ENEMY_SPAWN_RADIUS -> 1000;
+            case MAX_ENEMY_SPAWN_RADIUS -> 750;
         };
     }
 }

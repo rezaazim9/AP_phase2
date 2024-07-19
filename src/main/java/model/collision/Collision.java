@@ -1,23 +1,32 @@
 package model.collision;
 
+import controller.GameLoop;
+import controller.constants.DefaultMethods;
 import model.MotionPanelModel;
 import model.Profile;
+import model.WaveManager;
 import model.characters.CollectibleModel;
 import model.characters.EpsilonModel;
 import model.characters.GeoShapeModel;
+import model.characters.PortalModel;
 import model.entities.AttackTypes;
 import model.entities.Entity;
 import model.movement.Direction;
 import model.projectiles.BulletModel;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import view.menu.MainMenu;
+import view.menu.PauseMenu;
 
+import javax.swing.*;
 import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static controller.UserInterfaceController.exitGame;
 import static controller.constants.ImpactConstants.IMPACT_RADIUS;
 import static controller.constants.ImpactConstants.IMPACT_SCALE;
+import static controller.constants.UIMessageConstants.PURCHASE_TITLE;
 import static model.MotionPanelModel.getMainMotionPanelModel;
 import static model.Utils.*;
 import static model.characters.GeoShapeModel.allShapeModelsList;
@@ -37,7 +46,8 @@ public final class Collision implements Runnable {
         CopyOnWriteArrayList<MovementState.ShapeMovementState> out = new CopyOnWriteArrayList<>();
         for (GeoShapeModel shapeModel : allShapeModelsList) {
             if (shapeModel instanceof BulletModel || (shapeModel instanceof CollectibleModel collectibleModel &&
-                    state.stateOf1.collidable != collectibleModel.ancestor && state.stateOf2.collidable != collectibleModel.ancestor)) continue;
+                    state.stateOf1.collidable != collectibleModel.ancestor && state.stateOf2.collidable != collectibleModel.ancestor))
+                continue;
             float distance = (float) shapeModel.getMovement().getAnchor().distance(state.collisionPoint);
             float scale = (distance > IMPACT_RADIUS.getValue()) ? 0 : (IMPACT_SCALE.getValue() * IMPACT_RADIUS.getValue() - distance) / IMPACT_RADIUS.getValue();
             Direction direction = new Direction(relativeLocation(shapeModel.getMovement().getAnchor(), state.collisionPoint));
@@ -54,7 +64,7 @@ public final class Collision implements Runnable {
                     torque = scale * state.stateOf2.torque;
                 }
             }
-            out.add(new MovementState.ShapeMovementState(shapeModel,direction,torque,scale));
+            out.add(new MovementState.ShapeMovementState(shapeModel, direction, torque, scale));
         }
         return out;
     }
@@ -63,7 +73,8 @@ public final class Collision implements Runnable {
         List<MovementState.ShapeMovementState> collisionData = evaluateMovementEffects(state, artificialImpact);
         for (MovementState.ShapeMovementState movementState : collisionData) {
             movementState.geoShapeModel.getMovement().impact(movementState.direction, wavePower * movementState.scale);
-            if (movementState.torque != 0) movementState.geoShapeModel.getMovement().setAngularSpeed(movementState.torque);
+            if (movementState.torque != 0)
+                movementState.geoShapeModel.getMovement().setAngularSpeed(movementState.torque);
         }
     }
 
@@ -77,7 +88,7 @@ public final class Collision implements Runnable {
 
     public static void evaluatePhysicalEffects(MovementState.CollisionState state) {
         if (state.stateOf1.collidable instanceof Entity entity1 && state.stateOf2.collidable instanceof Entity entity2 && state.collisionPoint != null) {
-            Pair<Boolean,Boolean> meleePair=checkMelee(state);
+            Pair<Boolean, Boolean> meleePair = checkMelee(state);
             if (meleePair.getLeft() && meleePair.getRight()) return;
             if (entity1.isVulnerable() && (state.stateOf2.collidable instanceof BulletModel || state.stateOf1.collidable instanceof CollectibleModel || meleePair.getRight())) {
                 entity2.damage(entity1, AttackTypes.MELEE);
@@ -87,14 +98,16 @@ public final class Collision implements Runnable {
             }
         }
     }
-    public static Pair<Boolean,Boolean> checkMelee(MovementState.CollisionState state){
+
+    public static Pair<Boolean, Boolean> checkMelee(MovementState.CollisionState state) {
         boolean melee1to2 = state.stateOf1.collidable.isGeometryVertex(toCoordinate(state.collisionPoint)) != null &&
                 (state.stateOf1.collidable instanceof EpsilonModel || state.stateOf2.collidable instanceof EpsilonModel);
         boolean melee2to1 = state.stateOf2.collidable.isGeometryVertex(toCoordinate(state.collisionPoint)) != null &&
                 (state.stateOf1.collidable instanceof EpsilonModel || state.stateOf2.collidable instanceof EpsilonModel);
-        return new MutablePair<>(melee1to2,melee2to1);
+        return new MutablePair<>(melee1to2, melee2to1);
     }
-    public static void resolveCollectiblePickup(MovementState.CollisionState state){
+
+    public static void resolveCollectiblePickup(MovementState.CollisionState state) {
         if (state.stateOf1.collidable instanceof EpsilonModel && state.stateOf2.collidable instanceof CollectibleModel) {
             Profile.getCurrent().setCurrentGameXP(Profile.getCurrent().getCurrentGameXP() + ((CollectibleModel) state.stateOf2.collidable).getValue());
         }
@@ -108,19 +121,55 @@ public final class Collision implements Runnable {
         Collidable.CreateAllGeometries();
         List<MovementState.CollisionState> collisionStates = getAllMomentaryCollisions();
         for (MovementState.CollisionState state : collisionStates) {
-            boolean notNull=state.stateOf1!=null && state.stateOf2!=null;
+            boolean notNull = state.stateOf1 != null && state.stateOf2 != null;
             if (!notNull) continue;
+            if (state.stateOf1.collidable instanceof PortalModel portalModel && state.stateOf2.collidable instanceof EpsilonModel) {
+                portalHandler(portalModel);
+            }
+            if (state.stateOf2.collidable instanceof PortalModel portalModel && state.stateOf1.collidable instanceof EpsilonModel) {
+                portalHandler(portalModel);
+            }
             if (state.stateOf1.collidable instanceof BulletModel bulletModel) bulletModel.eliminate();
             if (state.stateOf2.collidable instanceof BulletModel bulletModel) bulletModel.eliminate();
+            if (state.stateOf1.collidable instanceof PortalModel || state.stateOf2.collidable instanceof PortalModel)
+                continue;
             evaluatePhysicalEffects(state);
             resolveCollectiblePickup(state);
-            boolean areBulletMotionPanel =  areInstancesOf(state.stateOf1.collidable, state.stateOf2.collidable, MotionPanelModel.class, BulletModel.class);
+            boolean areBulletMotionPanel = areInstancesOf(state.stateOf1.collidable, state.stateOf2.collidable, MotionPanelModel.class, BulletModel.class);
             boolean areEpsilonCollectible = areInstancesOf(state.stateOf1.collidable, state.stateOf2.collidable, EpsilonModel.class, CollectibleModel.class);
             if (areBulletMotionPanel) getMainMotionPanelModel().extend(roundPoint(state.collisionPoint));
             else if (!areEpsilonCollectible) emitImpactWave(state);
         }
     }
-    public List<MovementState.CollisionState> getAllMomentaryCollisions(){
+
+    public void portalHandler(PortalModel portalModel) {
+        GameLoop.getINSTANCE().setRunning(false);
+        EpsilonModel.getINSTANCE().deactivateMovement();
+        int action = JOptionPane.showConfirmDialog(new JOptionPane(), DefaultMethods.PORTAL_MESSAGE(), PURCHASE_TITLE.getValue(), JOptionPane.YES_NO_OPTION);
+        if (JOptionPane.YES_OPTION == action) {
+            if (Profile.getCurrent().getCurrentGameXP() >= GameLoop.getPR()) {
+                Profile.getCurrent().setCurrentGameXP(Profile.getCurrent().getCurrentGameXP() - GameLoop.getPR());
+                WaveManager.initialWave = WaveManager.wave - 1;
+                EpsilonModel.getINSTANCE().setHealth(EpsilonModel.getINSTANCE().getHealth() + 10);
+                exitGame();
+                PauseMenu.getINSTANCE().togglePanel(true);
+                MainMenu.flushINSTANCE();
+                MainMenu.getINSTANCE().togglePanel();
+            } else {
+                JOptionPane.showOptionDialog(new JOptionPane(), DefaultMethods.INSUFFICIENT_XP_MESSAGE(), PURCHASE_TITLE.getValue(), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
+                portalHandler(portalModel);
+            }
+        } else {
+            EpsilonModel.getINSTANCE().activateMovement();
+            Profile.getCurrent().setCurrentGameXP(Profile.getCurrent().getCurrentGameXP() + GameLoop.getPR() / 10);
+            GameLoop.getINSTANCE().setRunning(true);
+
+        }
+        portalModel.eliminate();
+
+    }
+
+    public List<MovementState.CollisionState> getAllMomentaryCollisions() {
         CopyOnWriteArrayList<MovementState.CollisionState> collisionStates = new CopyOnWriteArrayList<>();
         for (int i = 0; i < Collidable.collidables.size(); i++) {
             for (int j = i + 1; j < Collidable.collidables.size(); j++) {

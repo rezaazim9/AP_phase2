@@ -16,7 +16,7 @@ public enum ViewConstants {
             case SQUARANTINE_FACTOR -> Profile.getCurrent().getSizeScale() * 60;
             case BULLET_FACTOR -> Profile.getCurrent().getSizeScale() * 20;
             case COLLECTIBLE_SIZE_OFFSET -> 9;
-            case PORTAL_FACTOR -> Profile.getCurrent().getSizeScale() * 50;
+            case PORTAL_FACTOR -> Profile.getCurrent().getSizeScale() * 75;
         };
     }
 }

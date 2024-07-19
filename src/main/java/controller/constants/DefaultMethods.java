@@ -1,5 +1,6 @@
 package controller.constants;
 
+import controller.GameLoop;
 import view.characters.GeoShapeView;
 import view.characters.SquarantineView;
 import view.characters.TrigorathView;
@@ -58,6 +59,12 @@ public class DefaultMethods {
 
     public static String PURCHASE_MESSAGE(int cost) {
         return "Do you want to purchase this skill for " + cost + " XP?";
+    }
+    public static String PORTAL_MESSAGE() {
+        return "Do you want to save for "+ GameLoop.getPR() + " XP?"+"or continue?" ;
+    }
+    public static String INSUFFICIENT_XP_MESSAGE() {
+        return "You don't have enough XP.";
     }
 
     public static String SUCCESSFUL_PURCHASE_MESSAGE(String name) {

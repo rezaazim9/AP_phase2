@@ -2,6 +2,7 @@ package view.menu;
 
 import controller.constants.DefaultMethods;
 import model.Profile;
+import model.characters.EpsilonModel;
 import view.containers.ButtonB;
 import view.containers.PanelB;
 import view.containers.SliderB;
@@ -32,7 +33,10 @@ public class PauseMenu extends PanelB implements TopElement {
                 (int) BACK_BUTTON_WIDTH.getValue(), BACK_BUTTON_FONT_SCALE.getValue(), false, true);
         xp.toggleBold();
         ButtonB resume = new ButtonB(ButtonB.ButtonType.SMALL_MENU_BUTTON, "RESUME", (int) BACK_BUTTON_WIDTH.getValue(), BACK_BUTTON_FONT_SCALE.getValue(), false);
-        resume.addActionListener(e -> PauseMenu.getINSTANCE().togglePanel());
+        resume.addActionListener(e -> {
+            PauseMenu.getINSTANCE().togglePanel();
+            EpsilonModel.getINSTANCE().activateMovement();
+        });
         SliderB volumeSlider = new SliderB(this, MIN_VOLUME.getValue(), MAX_VOLUME.getValue(), Profile.getCurrent().getSoundScale(), VOLUME_SLIDER_NAME.getValue());
         volumeSlider.addChangeListener(e -> {
             Profile.getCurrent().setSoundScale(volumeSlider.getPreciseValue());
@@ -99,6 +103,7 @@ public class PauseMenu extends PanelB implements TopElement {
 
     @Override
     public void togglePanel() {
+        EpsilonModel.getINSTANCE().deactivateMovement();
         togglePanel(false);
     }
     public void togglePanel(boolean exit) {

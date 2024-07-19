@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import model.entities.Skill;
 
+import static controller.constants.ViewConstants.EPSILON_FACTOR;
+
 import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -21,16 +23,21 @@ public class Profile {
     private List<Integer> waveEnemyCount = new CopyOnWriteArrayList<>(List.of(2, 3, 4, 5, 6, 7, 8));
     private int ups = 800;
     private int fps = 80;
-    private int epsilonMeleeDamage = 10;
-    private int epsilonRangedDamage = 5;
     private float soundScale = 6;
     private float sizeScale = 0.75f;
     private float gameSpeed = 1.8f;
     private int epsilonShootingRapidity = 1;
     private String activeSkillSaveName = "";
     private List<String> acquiredSkillsNames = new CopyOnWriteArrayList<>();
+    private List<String> randomAquiredSkillNames = new CopyOnWriteArrayList<>();
     private int totalXP = 600;
     private int currentGameXP = 300;
+
+    private int epsilonMeleeDamage = 10;
+    private int epsilonRangedDamage = 5;
+    private int epsilonCollisionDamage = 0;
+    private float epsilonMeleeDamageProbability = 1;
+    private int epsilonHealingAmount = 0;
 
     @JsonCreator
     public Profile(@JsonProperty("profileId") String profileId, @JsonProperty("waveEnemyCount") List<Integer> waveEnemyCount, @JsonProperty("ups") int ups,
@@ -108,6 +115,30 @@ public class Profile {
         this.epsilonRangedDamage = epsilonRangedDamage;
     }
 
+    public int getEpsilonCollisionDamage() {
+        return epsilonCollisionDamage;
+    }
+
+    public void setEpsilonCollisionDamage(int epsilonCollisionDamage) {
+        this.epsilonCollisionDamage = epsilonCollisionDamage;
+    }
+
+    public float getEpsilonMeleeDamageProbability() {
+        return epsilonMeleeDamageProbability;
+    }
+    
+    public void setEpsilonMeleeDamageProbability(float epsilonMeleeDamageProbability) {
+        this.epsilonMeleeDamageProbability = epsilonMeleeDamageProbability;
+    }
+
+    public int getEpsilonHealingAmount() {
+        return epsilonHealingAmount;
+    }
+
+    public void setEpsilonHealingAmount(int epsilonHealingAmount) {
+        this.epsilonHealingAmount = epsilonHealingAmount;
+    }
+
     public float getSoundScale() {
         return soundScale;
     }
@@ -142,6 +173,14 @@ public class Profile {
 
     public List<String> getAcquiredSkillsNames() {
         return acquiredSkillsNames;
+    }
+
+    public void setRandomAcquiredSkillsNames(List<String> randomAquiredSkillNames) {
+        this.randomAquiredSkillNames = randomAquiredSkillNames;
+    }
+
+    public List<String> getRandomAcquiredSkillsNames() {
+        return randomAquiredSkillNames;
     }
 
     public int getTotalXP() {

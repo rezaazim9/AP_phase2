@@ -1,5 +1,5 @@
 package model.entities;
 
 public enum AttackTypes {
-    RANGED, MELEE
+    RANGED, MELEE, COLLISION
 }

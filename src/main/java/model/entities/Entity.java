@@ -1,6 +1,8 @@
 package model.entities;
 
+import model.Profile;
 import model.characters.CollectibleModel;
+import model.characters.EpsilonModel;
 import model.characters.GeoShapeModel;
 import model.movement.Movable;
 
@@ -28,7 +30,7 @@ public abstract class Entity {
 
     public void damage(Entity entity, AttackTypes attackType) {
         long now = System.nanoTime();
-        if (now - getLastMeleeTime() >= MELEE_COOLDOWN.getValue()) {
+        if (now - getLastMeleeTime() >= MELEE_COOLDOWN.getValue() || attackType != AttackTypes.MELEE) {
             if (entity.isVulnerable()) {
                 entity.setHealth(entity.getHealth() - getDamageSize().get(attackType));
                 if (entity.getHealth() <= 0) {
@@ -37,7 +39,11 @@ public abstract class Entity {
                     else playDownSoundEffect();
                 } else playHitSoundEffect();
             }
-            setLastMeleeTime(now);
+            if (attackType == AttackTypes.MELEE) setLastMeleeTime(now);
+            
+            if (this instanceof EpsilonModel) {    
+                addHealth(Profile.getCurrent().getEpsilonHealingAmount());
+            }
         }
     }
 

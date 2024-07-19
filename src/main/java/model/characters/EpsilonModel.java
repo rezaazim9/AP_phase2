@@ -6,6 +6,7 @@ import model.collision.Collidable;
 import model.entities.AttackTypes;
 import model.movement.Direction;
 import model.projectiles.LongRanged;
+import view.containers.MotionPanelView;
 import view.menu.MainMenu;
 
 import javax.swing.*;
@@ -42,6 +43,7 @@ public final class EpsilonModel extends GeoShapeModel implements LongRanged {
         getMovement().setAnchor(anchor);
         getDamageSize().put(AttackTypes.MELEE, Profile.getCurrent().getEpsilonMeleeDamage());
         getDamageSize().put(AttackTypes.RANGED, Profile.getCurrent().getEpsilonRangedDamage());
+        getDamageSize().put(AttackTypes.COLLISION, Profile.getCurrent().getEpsilonCollisionDamage());
         activateMovement();
     }
 
@@ -66,6 +68,13 @@ public final class EpsilonModel extends GeoShapeModel implements LongRanged {
         timer.start();
     }
 
+    public void deactivateMovement() {
+        getMovement().getMoveListeners().clear();
+        getMovement().setAngularSpeed(0);
+        getMovement().setSpeed(0);
+        getMovement().setSpeedSave(0);
+        UserInputHandler.getINSTANCE().setupInputHandler(MotionPanelView.getMainMotionPanelView());
+    }
     public void activateMovement() {
         getMovement().setAngularSpeed(0);
         getMovement().setSpeed(EPSILON_SPEED.getValue());
@@ -132,6 +141,10 @@ public final class EpsilonModel extends GeoShapeModel implements LongRanged {
 
             rotateShapeModel(getTotalRotation() - mouseAngle);
         });
+    }
+
+    public void healEpsilon() {
+        addHealth(Profile.getCurrent().getEpsilonHealingAmount());
     }
 
     @Override

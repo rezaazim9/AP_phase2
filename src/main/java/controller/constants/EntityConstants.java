@@ -23,9 +23,10 @@ public enum EntityConstants {
             case TRIGORATH_MELEE_DAMAGE -> 10;
             case SQUARANTINE_HEALTH -> 10;
             case SQUARANTINE_MELEE_DAMAGE -> 6;
-            case BULLET_HEALTH, COLLECTIBLE_HEALTH,PORTAL_HEALTH -> 0;
+            case BULLET_HEALTH, COLLECTIBLE_HEALTH -> 0;
+            case PORTAL_HEALTH -> Integer.MAX_VALUE;
             case COLLECTIBLE_LIFE_TIME -> 8;
-            case PORTAL_LIFE_TIME -> 10;
+            case PORTAL_LIFE_TIME ->15;
         };
     }
 

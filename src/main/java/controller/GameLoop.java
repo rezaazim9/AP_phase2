@@ -3,22 +3,16 @@ package controller;
 import model.MotionPanelModel;
 import model.Profile;
 import model.WaveManager;
-import model.characters.CollectibleModel;
 import model.characters.EpsilonModel;
 import model.characters.GeoShapeModel;
 import model.collision.Collision;
 import model.entities.Ability;
-import model.entities.AttackTypes;
-import model.entities.Entity;
 import model.movement.Movable;
 import view.characters.GeoShapeView;
 import view.containers.MotionPanelView;
 
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.Point2D;
-import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -42,20 +36,33 @@ public final class GameLoop implements Runnable {
     private long lastFrameTime;
     private long lastUpdateTime;
     private long timeSaveDiffCapture = 0;
+    private static long waveStart;
     private long timeSave;
-    private long waveTime;
     private volatile String info = "";
+    private static int PR = 0;
+
+    public static int getPR() {
+        return PR;
+    }
+
+    public static void setPR(int PR) {
+        GameLoop.PR = PR;
+    }
 
     public static void updateView() {
         for (MotionPanelView motionPanelView : allMotionPanelViewsList) {
             int[] properties = getMotionPanelProperties(motionPanelView.getViewId());
             motionPanelView.setBounds(properties[0], properties[1], properties[2], properties[3]);
             for (GeoShapeView shapeView : motionPanelView.shapeViews) {
-                shapeView.getRotatedIcon().setOpacity(BASE_PAINT_OPACITY.getValue() + getHealthScale(shapeView.getViewId())*(1- BASE_PAINT_OPACITY.getValue()));
+                shapeView.getRotatedIcon().setOpacity(BASE_PAINT_OPACITY.getValue() + getHealthScale(shapeView.getViewId()) * (1 - BASE_PAINT_OPACITY.getValue()));
                 shapeView.setVertexLocations(getGeoShapeVertices(shapeView.getViewId()));
             }
         }
         getGlassFrame().repaint();
+    }
+
+    public static void setWaveStart(long waveStart) {
+        GameLoop.waveStart = waveStart;
     }
 
     public static void updateModel() {
@@ -87,7 +94,7 @@ public final class GameLoop implements Runnable {
         AtomicInteger frames = new AtomicInteger(0), ticks = new AtomicInteger(0);
         AtomicFloat deltaU = new AtomicFloat(0), deltaF = new AtomicFloat(0);
         currentTime = System.nanoTime();
-        startTime=System.nanoTime();
+        startTime = System.nanoTime();
         lastFrameTime = currentTime;
         lastUpdateTime = currentTime;
         timeSave = currentTime;
@@ -96,11 +103,21 @@ public final class GameLoop implements Runnable {
         while (!exit.get()) {
             if (running.get()) {
                 currentTime = System.nanoTime();
-                gameLoopCycle(frames,ticks,deltaF,deltaU,timePerFrame,timePerUpdate);
+                gameLoopCycle(frames, ticks, deltaF, deltaU, timePerFrame, timePerUpdate);
             }
         }
     }
-    public void gameLoopCycle(AtomicInteger frames,AtomicInteger ticks, AtomicFloat deltaF,AtomicFloat deltaU, float timePerFrame, float timePerUpdate){
+
+    public int progressRateInWave() {
+        return (int) (WaveManager.wave * (currentTime - waveStart) / 1000000000);
+    }
+
+    public int progressRisk(int p) {
+        if (EpsilonModel.getINSTANCE().getHealth() == 0) return 0;
+        return (10 * Profile.getCurrent().getCurrentGameXP() * p / EpsilonModel.getINSTANCE().getHealth());
+    }
+
+    public void gameLoopCycle(AtomicInteger frames, AtomicInteger ticks, AtomicFloat deltaF, AtomicFloat deltaU, float timePerFrame, float timePerUpdate) {
         if (deltaU.get() >= 1) {
             updateModel();
             ticks.addAndGet(1);
@@ -124,14 +141,15 @@ public final class GameLoop implements Runnable {
             lastUpdateTime = currentTime;
         }
         if (currentTime - timeSave >= TimeUnit.SECONDS.toNanos(1)) {
-            long time=(GameLoop.getINSTANCE().currentTime-GameLoop.getINSTANCE().startTime)/1000000000;
-            StringBuilder abilities= new StringBuilder();
-            for (Ability ability:Ability.values()){
-                if (UserInterfaceController.canActiveAbility(ability.getName())){
+            long time = (currentTime - startTime) / 1000000000;
+            PR = WaveManager.PR + progressRisk(progressRateInWave());
+            StringBuilder abilities = new StringBuilder();
+            for (Ability ability : Ability.values()) {
+                if (UserInterfaceController.canActiveAbility(ability.getName())) {
                     abilities.append(" <br/>").append(ability.getName());
                 }
             }
-            info = "<html>FPS: " + frames + " <br/>UPS:" + ticks+" <br/>XP:" + Profile.getCurrent().getCurrentGameXP()+" <br/>HP:" +EpsilonModel.getINSTANCE().getHealth()+" <br/>Wave:" +WaveManager.wave +" <br/>Time:" +time+" <br/>Abilities:"+abilities+"</html>";
+            info = "<html>PR: " + PR + " <br/>FPS:" + frames + " <br/>UPS:" + ticks + " <br/>XP:" + Profile.getCurrent().getCurrentGameXP() + " <br/>HP:" + EpsilonModel.getINSTANCE().getHealth() + " <br/>Wave:" + WaveManager.wave + " <br/>Time:" + time + " <br/>Abilities:" + abilities + "</html>";
             frames.set(0);
             ticks.set(0);
             timeSave = currentTime;
@@ -151,20 +169,21 @@ public final class GameLoop implements Runnable {
         exit.set(true);
     }
 
+
     public void toggleGameLoop() {
         if (getMainMotionPanelView() == null || !getMainMotionPanelView().isVisible()) {
-            Thread thread=new Thread(this);
+            Thread thread = new Thread(this);
             thread.setDaemon(true);
             thread.start();
-        }
-        else {
+        } else {
             if (running.get()) {
                 long now = System.nanoTime();
                 updateTimeDiffCapture = now - lastUpdateTime;
                 frameTimeDiffCapture = now - lastFrameTime;
                 timeSaveDiffCapture = now - timeSave;
                 UserInputHandler.getINSTANCE().setShootTimeDiffCapture(now - UserInputHandler.getINSTANCE().getLastShootingTime());
-                for (Movable movable: Movable.movables) movable.setPositionUpdateTimeDiffCapture(now - movable.getLastPositionUpdateTime());
+                for (Movable movable : Movable.movables)
+                    movable.setPositionUpdateTimeDiffCapture(now - movable.getLastPositionUpdateTime());
             }
             if (!running.get()) {
                 currentTime = System.nanoTime();
@@ -172,20 +191,27 @@ public final class GameLoop implements Runnable {
                 lastFrameTime = currentTime - frameTimeDiffCapture;
                 timeSave = currentTime - timeSaveDiffCapture;
                 UserInputHandler.getINSTANCE().setLastShootingTime(currentTime - UserInputHandler.getINSTANCE().getShootTimeDiffCapture());
-                for (Movable movable: Movable.movables) movable.setLastPositionUpdateTime(currentTime - movable.getPositionUpdateTimeDiffCapture());
+                for (Movable movable : Movable.movables)
+                    movable.setLastPositionUpdateTime(currentTime - movable.getPositionUpdateTimeDiffCapture());
             }
         }
         running.set(!running.get());
     }
 
-    public boolean isRunning() {return running.get();}
+    public boolean isRunning() {
+        return running.get();
+    }
 
     public boolean isOn() {
         return !exit.get();
     }
-    public void setRunning(boolean running){this.running.set(running);}
-    public static String getInfo(){
-        if (INSTANCE!=null && getINSTANCE().isOn() && getINSTANCE().isRunning()) return getINSTANCE().info;
+
+    public void setRunning(boolean running) {
+        this.running.set(running);
+    }
+
+    public static String getInfo() {
+        if (INSTANCE != null && getINSTANCE().isOn() && getINSTANCE().isRunning()) return getINSTANCE().info;
         return "";
     }
 }

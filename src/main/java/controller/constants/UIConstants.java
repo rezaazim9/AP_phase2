@@ -50,10 +50,10 @@ public enum UIConstants {
             case MESSAGE_HEIGHT -> 100;
             case MESSAGE_FONT_SIZE -> 75;
             case DEFAULT_FONT_SIZE -> 15f;
-            case BACK_BUTTON_WIDTH -> 720;
-            case BACK_BUTTON_FONT_SCALE -> 0.65f;
-            case SKILL_BUTTON_WIDTH -> 240;
-            case SKILL_FONT_SIZE_SCALE -> 0.6f;
+            case BACK_BUTTON_WIDTH -> 500;
+            case BACK_BUTTON_FONT_SCALE -> 0.6f;
+            case SKILL_BUTTON_WIDTH -> 200;
+            case SKILL_FONT_SIZE_SCALE -> 0.4f;
             case ABILITY_FONT_SIZE_SCALE -> 0.5f;
             case SKILL_TEXT_OFFSET -> -40;
             case SLIDER_MINOR_SPACINGS_NUMBER -> 100;
