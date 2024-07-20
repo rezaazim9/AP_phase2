@@ -1,9 +1,8 @@
 package model;
 
 import controller.GameLoop;
+import controller.SpawnThread;
 import model.characters.*;
-import model.entities.Entity;
-import model.movement.Direction;
 import model.movement.Movable;
 import view.menu.MainMenu;
 
@@ -15,14 +14,11 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
 import static controller.UserInterfaceController.*;
-import static controller.constants.WaveConstants.MAX_ENEMY_SPAWN_RADIUS;
-import static controller.constants.WaveConstants.MIN_ENEMY_SPAWN_RADIUS;
-import static model.Utils.*;
 import static model.characters.GeoShapeModel.allShapeModelsList;
 import static model.collision.Collidable.collidables;
 
 public class WaveManager {
-    public static final List<GeoShapeModel> waveEntities = new CopyOnWriteArrayList<>();
+    public static List<GeoShapeModel> waveEntities = new CopyOnWriteArrayList<>();
     public static final Random random = new Random();
     public static int wave;
     public static int PR = 0;
@@ -31,28 +27,25 @@ public class WaveManager {
     public static int initialWave = 0;
     public static int killedEnemies = 0;
 
-    public void start() throws InterruptedException {
+    public void start() {
         initiateWave(initialWave);
-
     }
 
-    public void lockEnemies() {
-        for (GeoShapeModel model : waveEntities) {
-            if (!(model instanceof EpsilonModel)) {
-                model.getMovement().lockOnTarget(EpsilonModel.getINSTANCE().getModelId());
-            }
-        }
-    }
 
     public int progressRateTotalWave() {
         return (int) (wave * (waveFinish - waveStart) / 1000000000);
     }
 
     public int progressRisk(int p) {
-        return (10 * Profile.getCurrent().getCurrentGameXP() * p / EpsilonModel.getINSTANCE().getHealth());
+        Profile currentProfile = Profile.getCurrent();
+        EpsilonModel epsilonModel = EpsilonModel.getINSTANCE();
+        if (currentProfile != null && epsilonModel != null) {
+            return (10 * currentProfile.getCurrentGameXP() * p / epsilonModel.getHealth());
+        }
+        return 0;
     }
 
-    public void randomSpawn(int wave)  {
+    public void initialPortal() {
         if (wave != 0) {
             int x = (int) EpsilonModel.getINSTANCE().getAnchor().getX();
             int y = (int) EpsilonModel.getINSTANCE().getAnchor().getY();
@@ -62,32 +55,20 @@ public class WaveManager {
             }
             new PortalModel(getMainMotionPanelId(), new Point(x, y));
         }
-        for (int i = 0; i <7; i++) {
-            Point location = roundPoint(addUpPoints(EpsilonModel.getINSTANCE().getAnchor(),
-                    multiplyPoint(new Direction(random.nextFloat(0, 360)).getDirectionVector(),
-                            random.nextFloat(MIN_ENEMY_SPAWN_RADIUS.getValue(), MAX_ENEMY_SPAWN_RADIUS.getValue()))));
-            GeoShapeModel model;
-            if (wave == 0) model = new SquarantineModel(location, getMainMotionPanelId());
-            else {
-                model = switch (random.nextInt(0, 2)) {
-                    case 0 -> new SquarantineModel(location, getMainMotionPanelId());
-                    case 1 -> new TrigorathModel(location, getMainMotionPanelId());
-                    default -> null;
-                };
-            }
-            if (model != null) waveEntities.add(model);
-        }
+
     }
 
-    private void initiateWave(int wave) throws InterruptedException {
+
+    private void initiateWave(int wave) {
+        initialPortal();
         GameLoop.setWaveStart(System.nanoTime());
         waveFinish = System.nanoTime();
         PR += progressRisk(progressRateTotalWave());
         waveStart = System.nanoTime();
         WaveManager.wave = wave + 1;
-        randomSpawn(wave);
-        lockEnemies();
-        Timer waveTimer = new Timer(10, null);
+        SpawnThread spawnThread = new SpawnThread(wave);
+        spawnThread.start();
+        Timer waveTimer = new Timer(45 / (wave + 1), null);
         waveTimer.addActionListener(e -> {
             boolean waveFinished = false;
             if (killedEnemies - 1 > wave) {
@@ -95,24 +76,19 @@ public class WaveManager {
                 killedEnemies = 0;
             }
             if (waveFinished) {
-                for (Entity entity : waveEntities) {
-                    if (entity instanceof GeoShapeModel geoShapeModel) {
+                if (waveEntities != null) {
+                    for (GeoShapeModel shapeModel : waveEntities) {
                         allShapeModelsList.remove(this);
-                        collidables.remove(geoShapeModel);
-                        Movable.movables.remove(geoShapeModel);
-                        eliminateView(entity.getModelId(), entity.getMotionPanelId());
+                        collidables.remove(shapeModel);
+                        Movable.movables.remove(shapeModel);
+                        eliminateView(shapeModel.getModelId(), shapeModel.getMotionPanelId());
                     }
+                    waveEntities.clear();
                 }
-                waveEntities.clear();
                 waveTimer.stop();
                 float length = showMessage(6 - wave);
-                if (wave < 6) {
-                    try {
-                        initiateWave(wave + 1);
-                    } catch (InterruptedException ex) {
-                        throw new RuntimeException(ex);
-                    }
-                } else finishGame(length);
+                if (wave < 6) initiateWave(wave + 1);
+                else finishGame(length);
             }
         });
         waveTimer.start();
@@ -122,7 +98,10 @@ public class WaveManager {
         Timer timer = new Timer((int) TimeUnit.NANOSECONDS.toMillis((long) lastSceneTime), e -> {
             GameLoop.setPR(0);
             exitGame();
-            Profile.getCurrent().saveXP();
+            Profile currentProfile = Profile.getCurrent();
+            if (currentProfile != null) {
+                currentProfile.saveXP();
+            }
             MainMenu.flushINSTANCE();
             MainMenu.getINSTANCE().togglePanel();
         });
