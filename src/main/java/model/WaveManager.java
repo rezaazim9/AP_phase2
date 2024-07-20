@@ -2,7 +2,9 @@ package model;
 
 import controller.GameLoop;
 import model.characters.*;
+import model.entities.Entity;
 import model.movement.Direction;
+import model.movement.Movable;
 import view.menu.MainMenu;
 
 import javax.swing.*;
@@ -16,18 +18,20 @@ import static controller.UserInterfaceController.*;
 import static controller.constants.WaveConstants.MAX_ENEMY_SPAWN_RADIUS;
 import static controller.constants.WaveConstants.MIN_ENEMY_SPAWN_RADIUS;
 import static model.Utils.*;
+import static model.characters.GeoShapeModel.allShapeModelsList;
+import static model.collision.Collidable.collidables;
 
 public class WaveManager {
-    public final List<Integer> waveCount = Profile.getCurrent().getWaveEnemyCount();
-    private final List<GeoShapeModel> waveEntities = new CopyOnWriteArrayList<>();
+    public static final List<GeoShapeModel> waveEntities = new CopyOnWriteArrayList<>();
     public static final Random random = new Random();
     public static int wave;
     public static int PR = 0;
     private long waveStart = System.nanoTime();
     private long waveFinish;
     public static int initialWave = 0;
+    public static int killedEnemies = 0;
 
-    public void start() {
+    public void start() throws InterruptedException {
         initiateWave(initialWave);
 
     }
@@ -48,7 +52,7 @@ public class WaveManager {
         return (10 * Profile.getCurrent().getCurrentGameXP() * p / EpsilonModel.getINSTANCE().getHealth());
     }
 
-    public void randomSpawn(int wave) {
+    public void randomSpawn(int wave)  {
         if (wave != 0) {
             int x = (int) EpsilonModel.getINSTANCE().getAnchor().getX();
             int y = (int) EpsilonModel.getINSTANCE().getAnchor().getY();
@@ -56,10 +60,9 @@ public class WaveManager {
                 x = random.nextInt((int) EpsilonModel.getINSTANCE().getAnchor().getX() - 200, (int) EpsilonModel.getINSTANCE().getAnchor().getX() + 200);
                 y = random.nextInt((int) EpsilonModel.getINSTANCE().getAnchor().getY() - 200, (int) EpsilonModel.getINSTANCE().getAnchor().getY() + 200);
             }
-        new PortalModel(getMainMotionPanelId(), new Point(x, y));
-//
+            new PortalModel(getMainMotionPanelId(), new Point(x, y));
         }
-        for (int i = 0; i < waveCount.get(wave); i++) {
+        for (int i = 0; i <7; i++) {
             Point location = roundPoint(addUpPoints(EpsilonModel.getINSTANCE().getAnchor(),
                     multiplyPoint(new Direction(random.nextFloat(0, 360)).getDirectionVector(),
                             random.nextFloat(MIN_ENEMY_SPAWN_RADIUS.getValue(), MAX_ENEMY_SPAWN_RADIUS.getValue()))));
@@ -76,8 +79,8 @@ public class WaveManager {
         }
     }
 
-    private void initiateWave(int wave) {
-        GameLoop.setWaveStart( System.nanoTime());
+    private void initiateWave(int wave) throws InterruptedException {
+        GameLoop.setWaveStart(System.nanoTime());
         waveFinish = System.nanoTime();
         PR += progressRisk(progressRateTotalWave());
         waveStart = System.nanoTime();
@@ -86,19 +89,30 @@ public class WaveManager {
         lockEnemies();
         Timer waveTimer = new Timer(10, null);
         waveTimer.addActionListener(e -> {
-            boolean waveFinished = true;
-            for (GeoShapeModel shapeModel : waveEntities) {
-                if (shapeModel.getHealth() > 0) {
-                    waveFinished = false;
-                    break;
-                }
+            boolean waveFinished = false;
+            if (killedEnemies - 1 > wave) {
+                waveFinished = true;
+                killedEnemies = 0;
             }
             if (waveFinished) {
-                waveTimer.stop();
+                for (Entity entity : waveEntities) {
+                    if (entity instanceof GeoShapeModel geoShapeModel) {
+                        allShapeModelsList.remove(this);
+                        collidables.remove(geoShapeModel);
+                        Movable.movables.remove(geoShapeModel);
+                        eliminateView(entity.getModelId(), entity.getMotionPanelId());
+                    }
+                }
                 waveEntities.clear();
-                float length = showMessage(waveCount.size() - 1 - wave);
-                if (wave < waveCount.size() - 1) initiateWave(wave + 1);
-                else finishGame(length);
+                waveTimer.stop();
+                float length = showMessage(6 - wave);
+                if (wave < 6) {
+                    try {
+                        initiateWave(wave + 1);
+                    } catch (InterruptedException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else finishGame(length);
             }
         });
         waveTimer.start();

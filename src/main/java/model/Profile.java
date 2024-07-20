@@ -20,7 +20,6 @@ public class Profile {
     public static final int SKILL_KEYCODE = KeyEvent.VK_SHIFT;
     public static final int PAUSE_KEYCODE = KeyEvent.VK_ESCAPE;
     private String profileId;
-    private List<Integer> waveEnemyCount = new CopyOnWriteArrayList<>(List.of(2, 3, 4, 5, 6, 7, 8));
     private int ups = 800;
     private int fps = 80;
     private float soundScale = 6;
@@ -40,13 +39,12 @@ public class Profile {
     private int epsilonHealingAmount = 0;
 
     @JsonCreator
-    public Profile(@JsonProperty("profileId") String profileId, @JsonProperty("waveEnemyCount") List<Integer> waveEnemyCount, @JsonProperty("ups") int ups,
+    public Profile(@JsonProperty("profileId") String profileId, @JsonProperty("ups") int ups,
                    @JsonProperty("fps") int fps, @JsonProperty("epsilonMeleeDamage") int epsilonMeleeDamage, @JsonProperty("epsilonRangedDamage") int epsilonRangedDamage,
                    @JsonProperty("soundScale") float soundScale, @JsonProperty("sizeScale") float sizeScale, @JsonProperty("gameSpeed") float gameSpeed,
                    @JsonProperty("epsilonShootingRapidity") int epsilonShootingRapidity, @JsonProperty("activeSkillSaveName") String activeSkillSaveName,
-                   @JsonProperty("acquiredSkillsNames") List<String> acquiredSkillsNames, @JsonProperty("totalXP") int totalXP, @JsonProperty("currentGameXP") int currentGameXP) {
+                   @JsonProperty("acquiredSkillsNames") List<String> acquiredSkillsNames, @JsonProperty("totalXP") int totalXP, @JsonProperty("currentGameXP") int currentGameXP, @JsonProperty("randomAquiredSkillNames")  List<String> randomAquiredSkillNames) {
         this.profileId = profileId;
-        this.waveEnemyCount = waveEnemyCount;
         this.ups = ups;
         this.fps = fps;
         this.epsilonMeleeDamage = epsilonMeleeDamage;
@@ -57,6 +55,7 @@ public class Profile {
         this.epsilonShootingRapidity = epsilonShootingRapidity;
         this.activeSkillSaveName = activeSkillSaveName;
         this.acquiredSkillsNames = acquiredSkillsNames;
+        this.randomAquiredSkillNames = randomAquiredSkillNames;
         this.totalXP = totalXP;
         this.currentGameXP = currentGameXP;
     }
@@ -87,9 +86,6 @@ public class Profile {
         return String.valueOf(profileId);
     }
 
-    public List<Integer> getWaveEnemyCount() {
-        return waveEnemyCount;
-    }
 
     public int getUps() {
         return ups;
@@ -126,7 +122,7 @@ public class Profile {
     public float getEpsilonMeleeDamageProbability() {
         return epsilonMeleeDamageProbability;
     }
-    
+
     public void setEpsilonMeleeDamageProbability(float epsilonMeleeDamageProbability) {
         this.epsilonMeleeDamageProbability = epsilonMeleeDamageProbability;
     }

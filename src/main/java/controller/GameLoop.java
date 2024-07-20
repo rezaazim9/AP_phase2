@@ -90,7 +90,11 @@ public final class GameLoop implements Runnable {
     public void run() {
         running.set(true);
         exit.set(false);
-        initializeGame();
+        try {
+            initializeGame();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         AtomicInteger frames = new AtomicInteger(0), ticks = new AtomicInteger(0);
         AtomicFloat deltaU = new AtomicFloat(0), deltaF = new AtomicFloat(0);
         currentTime = System.nanoTime();
@@ -156,7 +160,8 @@ public final class GameLoop implements Runnable {
         }
     }
 
-    public void initializeGame() {
+    public void initializeGame() throws InterruptedException {
+
         getMainMotionPanelModel();
         playGameTheme(getMainMotionPanelView());
         EpsilonModel.getINSTANCE();

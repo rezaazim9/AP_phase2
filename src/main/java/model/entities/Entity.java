@@ -1,11 +1,14 @@
 package model.entities;
 
+import controller.GameLoop;
 import model.Profile;
+import model.WaveManager;
 import model.characters.CollectibleModel;
 import model.characters.EpsilonModel;
 import model.characters.GeoShapeModel;
 import model.movement.Movable;
 
+import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -14,6 +17,7 @@ import static controller.constants.ImpactConstants.MELEE_COOLDOWN;
 import static model.characters.CollectibleModel.bulkCreateCollectibles;
 import static model.characters.GeoShapeModel.allShapeModelsList;
 import static model.collision.Collidable.collidables;
+import static org.apache.commons.lang3.ThreadUtils.sleep;
 
 public abstract class Entity {
     private int health;
@@ -35,19 +39,22 @@ public abstract class Entity {
                 entity.setHealth(entity.getHealth() - getDamageSize().get(attackType));
                 if (entity.getHealth() <= 0) {
                     entity.eliminate();
+                    WaveManager.waveEntities.remove(entity);
+                    WaveManager.killedEnemies++;
                     if (entity instanceof CollectibleModel) playXPSoundEffect();
                     else playDownSoundEffect();
                 } else playHitSoundEffect();
             }
             if (attackType == AttackTypes.MELEE) setLastMeleeTime(now);
-            
-            if (this instanceof EpsilonModel) {    
+
+            if (this instanceof EpsilonModel) {
                 addHealth(Profile.getCurrent().getEpsilonHealingAmount());
             }
         }
     }
 
     public void eliminate() {
+
         if (this instanceof GeoShapeModel geoShapeModel) {
             bulkCreateCollectibles((GeoShapeModel) this);
             allShapeModelsList.remove(this);

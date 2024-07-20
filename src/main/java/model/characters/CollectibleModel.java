@@ -24,7 +24,7 @@ public class CollectibleModel extends GeoShapeModel {
         this.ancestor = geoShapeModel;
         this.setMotionPanelId(geoShapeModel.getMotionPanelId());
         this.setAnchorSave(new Point2D.Float((COLLECTIBLE_SIZE_OFFSET.getValue() + geoShapeModel.getCollectibleValue()) / 2f, (COLLECTIBLE_SIZE_OFFSET.getValue() + geoShapeModel.getCollectibleValue()) / 2f));
-        createCollectible(getModelId(), geoShapeModel.getModelId(), geoShapeModel.getCollectibleValue(), roundPoint(getAnchorSave()), geoShapeModel.getMotionPanelId());
+       createCollectible(getModelId(), geoShapeModel.getModelId(), geoShapeModel.getCollectibleValue(), roundPoint(getAnchorSave()), geoShapeModel.getMotionPanelId());
         Point2D spawnLocation = addUpPoints(geoShapeModel.getAnchor(), multiplyPoint(new Direction(random.nextFloat(0, 360)).getDirectionVector(), random.nextFloat(0, geoShapeModel.getRadius())));
         moveShapeModel(spawnLocation);
         getMovement().setAnchor(spawnLocation);

@@ -28,7 +28,7 @@ public enum FilePaths {
             case TRIGORATH_IMAGEPATH -> "./src/main/resources/character sprites/trigorath.png";
             case BULLET_IMAGEPATH -> "./src/main/resources/character sprites/bullet.png";
             case EPSILON_IMAGEPATH -> "./src/main/resources/character sprites/epsilon.png";
-            case SAVE_FILES_FOLDER_PATH -> "./src/main/saves/";
+            case SAVE_FILES_FOLDER_PATH -> "./src/main/Saves/";
         };
     }
 
