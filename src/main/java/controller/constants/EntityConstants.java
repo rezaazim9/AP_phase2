@@ -26,7 +26,7 @@ public enum EntityConstants {
             case BULLET_HEALTH, COLLECTIBLE_HEALTH -> 0;
             case PORTAL_HEALTH -> Integer.MAX_VALUE;
             case COLLECTIBLE_LIFE_TIME -> 8;
-            case PORTAL_LIFE_TIME ->15;
+            case PORTAL_LIFE_TIME ->7;
         };
     }
 

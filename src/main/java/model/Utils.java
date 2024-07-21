@@ -100,7 +100,7 @@ public class Utils {
      */
     public static Point2D relativeLocation(Point2D point, Point2D anchor) {
         Point2D out = new Point2D.Float((float) (point.getX() - anchor.getX()), (float) (point.getY() - anchor.getY()));
-        if (point instanceof Point && anchor instanceof Point) return roundPoint(out);
+        if (point instanceof Point || anchor instanceof Point) return roundPoint(out);
         return out;
     }
 

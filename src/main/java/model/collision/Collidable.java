@@ -29,6 +29,7 @@ public interface Collidable {
     }
 
     static Coordinate getClosestCoordinate(Coordinate anchor, Geometry geometry) {
+        if (geometry.getCoordinates().length == 0) return anchor;
         return DistanceOp.nearestPoints(geometry, new GeometryFactory().createLineString(new Coordinate[]{anchor, anchor}))[0];
     }
 

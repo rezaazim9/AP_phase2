@@ -79,12 +79,11 @@ public enum Skill {
         return switch (this) {
 
             case ARES -> e -> {
-                Profile.getCurrent().setEpsilonMeleeDamage((int) (Profile.getCurrent().getEpsilonMeleeDamage() + WRIT_OF_ARES_BUFF_AMOUNT.getValue()));
-                Profile.getCurrent().setEpsilonRangedDamage((int) (Profile.getCurrent().getEpsilonRangedDamage() + WRIT_OF_ARES_BUFF_AMOUNT.getValue()));
+                EpsilonModel.getINSTANCE().getDamageSize().put(AttackTypes.MELEE, (int) (Profile.getCurrent().getEpsilonMeleeDamage() + WRIT_OF_ARES_BUFF_AMOUNT.getValue()));
+                EpsilonModel.getINSTANCE().getDamageSize().put(AttackTypes.RANGED, (int) (Profile.getCurrent().getEpsilonRangedDamage() + WRIT_OF_ARES_BUFF_AMOUNT.getValue()));
             };
             case ASTRAPE -> e -> {
-                Profile.getCurrent().setEpsilonCollisionDamage((int) (Profile.getCurrent().getEpsilonCollisionDamage() + WRIT_OF_ASTRAPE_BUFF_AMOUNT.getValue()));
-
+                EpsilonModel.getINSTANCE().getDamageSize().put(AttackTypes.COLLISION, (int) (Profile.getCurrent().getEpsilonCollisionDamage() + WRIT_OF_ASTRAPE_BUFF_AMOUNT.getValue()));
             };
             case CERBERUS -> e -> {
                 // TODO: Implement Cerberus skill
@@ -106,9 +105,7 @@ public enum Skill {
             };
             case PROTEUS -> e -> EpsilonModel.getINSTANCE().addVertex();
             case EMPUSA -> e -> {
-                Point2D newAnchor = new Point2D.Float((int) EpsilonModel.getINSTANCE().getAnchor().getX() * WRIT_OF_EMPUSA_BUFF_FACTOR.getValue(),
-                        (int) EpsilonModel.getINSTANCE().getAnchor().getY() * WRIT_OF_EMPUSA_BUFF_FACTOR.getValue());
-                EpsilonModel.getINSTANCE().setAnchorSave(deepClone(newAnchor));
+                // TODO
             };
             case DOLUS -> e -> {
                 if (Profile.getCurrent().getRandomAcquiredSkillsNames().isEmpty()) {

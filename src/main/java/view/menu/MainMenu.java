@@ -1,5 +1,6 @@
 package view.menu;
 
+import model.characters.EpsilonModel;
 import view.containers.ButtonB;
 import view.containers.PanelB;
 

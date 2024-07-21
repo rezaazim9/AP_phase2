@@ -2,6 +2,7 @@ package view.menu;
 
 import controller.constants.DefaultMethods;
 import model.Profile;
+import model.WaveManager;
 import model.characters.EpsilonModel;
 import view.containers.ButtonB;
 import view.containers.PanelB;
@@ -20,6 +21,7 @@ import static controller.constants.DefaultMethods.ABILITY_ACTIVATE_MESSAGE;
 import static controller.constants.DimensionConstants.PAUSE_MENU_DIMENSION;
 import static controller.constants.UIConstants.*;
 import static controller.constants.UIMessageConstants.*;
+import static model.WaveManager.spawn;
 import static view.containers.GlassFrame.getGlassFrame;
 
 public class PauseMenu extends PanelB implements TopElement {
@@ -36,6 +38,7 @@ public class PauseMenu extends PanelB implements TopElement {
         resume.addActionListener(e -> {
             PauseMenu.getINSTANCE().togglePanel();
             EpsilonModel.getINSTANCE().activateMovement();
+            spawn.run();
         });
         SliderB volumeSlider = new SliderB(this, MIN_VOLUME.getValue(), MAX_VOLUME.getValue(), Profile.getCurrent().getSoundScale(), VOLUME_SLIDER_NAME.getValue());
         volumeSlider.addChangeListener(e -> {
@@ -49,6 +52,8 @@ public class PauseMenu extends PanelB implements TopElement {
                     , JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
             if (action == JOptionPane.YES_OPTION) {
                 exitGame();
+                WaveManager.wave=6;
+                spawn.interrupt();
                 PauseMenu.getINSTANCE().togglePanel(true);
                 MainMenu.flushINSTANCE();
                 MainMenu.getINSTANCE().togglePanel();
@@ -81,6 +86,8 @@ public class PauseMenu extends PanelB implements TopElement {
                                 SUCCESSFUL_ABILITY_ACTIVATION_TITLE.getValue(), JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
                         if (confirmAction == JOptionPane.CLOSED_OPTION) {
                             PauseMenu.getINSTANCE().togglePanel();
+                            EpsilonModel.getINSTANCE().activateMovement();
+                            spawn.run();
                         }
                     } else {
                         JOptionPane.showOptionDialog(getINSTANCE(), DefaultMethods.UNSUCCESSFUL_ACTIVATE_MESSAGE(abilityData.getKey()), UNSUCCESSFUL_PURCHASE_TITLE.getValue(),
@@ -93,7 +100,10 @@ public class PauseMenu extends PanelB implements TopElement {
     }
 
     public static PauseMenu getINSTANCE() {
-        if (INSTANCE==null || !INSTANCE.isVisible()) INSTANCE=new PauseMenu();
+        if (INSTANCE==null || !INSTANCE.isVisible()) {
+            INSTANCE=new PauseMenu();
+            spawn.stopThread();
+        }
         return INSTANCE;
     }
 

@@ -165,6 +165,7 @@ public class Movement {
     }
 
     public Point2D getAnchor() {
+        if (anchor == null) anchor = new Point2D.Float(0, 0);
         return anchor;
     }
 

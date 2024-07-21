@@ -110,6 +110,7 @@ public class GeoShapeModel extends Entity implements Collidable, Translatable, M
         return (float) getAnchorSave().getX();
     }
 
+
     @Override
     public Point2D getAnchor() {
         return movement.getAnchor();

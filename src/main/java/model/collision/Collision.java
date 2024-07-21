@@ -1,6 +1,7 @@
 package model.collision;
 
 import controller.GameLoop;
+import controller.SpawnThread;
 import controller.constants.DefaultMethods;
 import model.MotionPanelModel;
 import model.Profile;
@@ -15,6 +16,7 @@ import model.movement.Direction;
 import model.projectiles.BulletModel;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.locationtech.jts.geom.Dimension;
 import view.menu.MainMenu;
 import view.menu.PauseMenu;
 
@@ -23,6 +25,7 @@ import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static controller.AudioHandler.random;
 import static controller.UserInterfaceController.exitGame;
 import static controller.constants.ImpactConstants.IMPACT_RADIUS;
 import static controller.constants.ImpactConstants.IMPACT_SCALE;
@@ -89,12 +92,20 @@ public final class Collision implements Runnable {
     public static void evaluatePhysicalEffects(MovementState.CollisionState state) {
         if (state.stateOf1.collidable instanceof Entity entity1 && state.stateOf2.collidable instanceof Entity entity2 && state.collisionPoint != null) {
             Pair<Boolean, Boolean> meleePair = checkMelee(state);
+            boolean epsilonMelee = random.nextFloat() < Profile.getCurrent().getEpsilonMeleeDamageProbability();
+
             if (meleePair.getLeft() && meleePair.getRight()) return;
             if (entity1.isVulnerable() && (state.stateOf2.collidable instanceof BulletModel || state.stateOf1.collidable instanceof CollectibleModel || meleePair.getRight())) {
+                if (entity2 instanceof EpsilonModel)
+                    EpsilonModel.getINSTANCE().healEpsilon();
+                if (epsilonMelee || !(entity1 instanceof EpsilonModel))
                 entity2.damage(entity1, AttackTypes.MELEE);
             }
             if (entity2.isVulnerable() && (state.stateOf1.collidable instanceof BulletModel || state.stateOf2.collidable instanceof CollectibleModel || meleePair.getLeft())) {
-                entity1.damage(entity2, AttackTypes.MELEE);
+                if (entity1 instanceof EpsilonModel)
+                    EpsilonModel.getINSTANCE().healEpsilon();
+                if (epsilonMelee || !(entity2 instanceof EpsilonModel))
+                    entity1.damage(entity2, AttackTypes.MELEE);
             }
         }
     }
@@ -142,9 +153,11 @@ public final class Collision implements Runnable {
         }
     }
 
+
     public void portalHandler(PortalModel portalModel) {
         GameLoop.getINSTANCE().setRunning(false);
         EpsilonModel.getINSTANCE().deactivateMovement();
+
         int action = JOptionPane.showConfirmDialog(new JOptionPane(), DefaultMethods.PORTAL_MESSAGE(), PURCHASE_TITLE.getValue(), JOptionPane.YES_NO_OPTION);
         if (JOptionPane.YES_OPTION == action) {
             if (Profile.getCurrent().getCurrentGameXP() >= GameLoop.getPR()) {
@@ -163,18 +176,18 @@ public final class Collision implements Runnable {
             EpsilonModel.getINSTANCE().activateMovement();
             Profile.getCurrent().setCurrentGameXP(Profile.getCurrent().getCurrentGameXP() + GameLoop.getPR() / 10);
             GameLoop.getINSTANCE().setRunning(true);
-
         }
         portalModel.eliminate();
-
     }
 
     public List<MovementState.CollisionState> getAllMomentaryCollisions() {
         CopyOnWriteArrayList<MovementState.CollisionState> collisionStates = new CopyOnWriteArrayList<>();
         for (int i = 0; i < Collidable.collidables.size(); i++) {
             for (int j = i + 1; j < Collidable.collidables.size(); j++) {
-                MovementState.CollisionState state;
-                state = Collidable.collidables.get(i).checkCollision(Collidable.collidables.get(j));
+                MovementState.CollisionState state=null;
+                if (Collidable.collidables.size()>i && Collidable.collidables.size()>j) {
+                    state = Collidable.collidables.get(i).checkCollision(Collidable.collidables.get(j));
+                }
                 if (state != null) collisionStates.add(state);
             }
         }

@@ -18,9 +18,9 @@ public class DefaultMethods {
     private DefaultMethods() {}
 
     //SIN,COS PRE-PROCESSING//
-    public static final double[] sinTable = new double[360];
-    public static final double[] cosTable = new double[360];
-    public static  final double[] radianTable = new double[360];
+    public static final double[] sinTable = new double[361];
+    public static final double[] cosTable = new double[361];
+    public static  final double[] radianTable = new double[361];
 
     static {
         for (int i = 0; i < 360; i++) {

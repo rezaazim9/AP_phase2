@@ -46,7 +46,7 @@ public final class GlassFrame extends JFrame {
         fpsCounter.setFont(MANTINIA_FONT.deriveFont(Font.BOLD,FPS_COUNTER_FONT_SIZE.getValue()));
         fpsCounter.setForeground(BLOOD_RED);
         fpsCounter.setLocation(0,0);
-        fpsCounter.setSize(200,200);
+        fpsCounter.setSize(200,300);
         fpsCounter.setBackground(changeColorOpacity(SCI_FI_DARK_BLUE, FPS_COUNTER_OPACITY.getValue()));
         fpsCounter.setOpaque(true);
         new Timer(10,e -> {

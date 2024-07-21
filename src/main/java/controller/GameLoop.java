@@ -13,6 +13,7 @@ import view.containers.MotionPanelView;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -40,6 +41,7 @@ public final class GameLoop implements Runnable {
     private long timeSave;
     private volatile String info = "";
     private static int PR = 0;
+    private WaveManager waveManager;
 
     public static int getPR() {
         return PR;
@@ -48,6 +50,7 @@ public final class GameLoop implements Runnable {
     public static void setPR(int PR) {
         GameLoop.PR = PR;
     }
+
 
     public static void updateView() {
         for (MotionPanelView motionPanelView : allMotionPanelViewsList) {
@@ -90,7 +93,11 @@ public final class GameLoop implements Runnable {
     public void run() {
         running.set(true);
         exit.set(false);
-        initializeGame();
+        try {
+            initializeGame();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         AtomicInteger frames = new AtomicInteger(0), ticks = new AtomicInteger(0);
         AtomicFloat deltaU = new AtomicFloat(0), deltaF = new AtomicFloat(0);
         currentTime = System.nanoTime();
@@ -149,20 +156,20 @@ public final class GameLoop implements Runnable {
                     abilities.append(" <br/>").append(ability.getName());
                 }
             }
-            info = "<html>PR: " + PR + " <br/>FPS:" + frames + " <br/>UPS:" + ticks + " <br/>XP:" + Profile.getCurrent().getCurrentGameXP() + " <br/>HP:" + EpsilonModel.getINSTANCE().getHealth() + " <br/>Wave:" + WaveManager.wave + " <br/>Time:" + time + " <br/>Abilities:" + abilities + "</html>";
+            info = "<html>PR:" + PR   +" <br/>FPS:" + frames + " <br/>UPS:" + ticks + " <br/>XP:" + Profile.getCurrent().getCurrentGameXP() + " <br/>HP:" + EpsilonModel.getINSTANCE().getHealth() + " <br/>Wave:" + WaveManager.wave + " <br/>Time:" + time + " <br/>Abilities:" + abilities + "</html>";
             frames.set(0);
             ticks.set(0);
             timeSave = currentTime;
         }
     }
 
-    public void initializeGame() {
+    public void initializeGame() throws InterruptedException {
         getMainMotionPanelModel();
         playGameTheme(getMainMotionPanelView());
         EpsilonModel.getINSTANCE();
         UserInputHandler.getINSTANCE().setupInputHandler(getMainMotionPanelView());
         getMainMotionPanelView().requestFocus();
-        new WaveManager().start();
+        (this.waveManager = new WaveManager()).start();
     }
 
     public void forceExitGame() {
@@ -213,5 +220,9 @@ public final class GameLoop implements Runnable {
     public static String getInfo() {
         if (INSTANCE != null && getINSTANCE().isOn() && getINSTANCE().isRunning()) return getINSTANCE().info;
         return "";
+    }
+
+    public WaveManager getWaveManager() {
+        return waveManager;
     }
 }

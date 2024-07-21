@@ -67,7 +67,7 @@ public class Message extends JLabel implements TopElement {
     }
 
     public enum MessageType {
-        NIHIL, UNUS, DUO, TRES, QUATTUOR, QUINQUE, SEX, GAME_OVER;
+        NIHIL, UNUS, DUO, TRES, QUATTUOR, GAME_OVER;
 
         public String getValue() {
             if (this==GAME_OVER) return "GAME OVER";

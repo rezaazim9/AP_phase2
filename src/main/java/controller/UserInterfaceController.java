@@ -3,6 +3,7 @@ package controller;
 import model.JsonOperator;
 import model.MotionPanelModel;
 import model.Profile;
+import model.WaveManager;
 import model.characters.EpsilonModel;
 import model.characters.GeoShapeModel;
 import model.collision.Collidable;
@@ -100,6 +101,8 @@ public abstract class UserInterfaceController {
             motionPanelView.shapeViews.clear();
             motionPanelView.setVisible(false);
         }
+        WaveManager.spawn.interrupt();
+        WaveManager.waveEntities.clear();
         setMainMotionPanelModel(null);
         setMainMotionPanelView(null);
         allMotionPanelViewsList.clear();
@@ -267,7 +270,7 @@ public abstract class UserInterfaceController {
 
     public static synchronized GeoShapeModel findModel(String viewId) {
         for (GeoShapeModel shapeModel : allShapeModelsList) {
-            if (viewId.equals(shapeModel.getModelId())) return shapeModel;
+            if (viewId==(shapeModel.getModelId())) return shapeModel;
         }
         return null;
     }

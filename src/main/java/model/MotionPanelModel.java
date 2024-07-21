@@ -3,6 +3,7 @@ package model;
 import controller.AtomicFloat;
 import controller.TypedActionListener;
 import model.collision.Collidable;
+import model.entities.Entity;
 import model.movement.Movable;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.Geometry;
@@ -25,7 +26,7 @@ import static controller.constants.MovementConstants.POSITION_UPDATE_INTERVAL;
 import static controller.constants.ShrinkConstants.*;
 import static model.Utils.*;
 
-public class MotionPanelModel implements Collidable, Movable {
+public class MotionPanelModel extends Entity implements Collidable, Movable  {
     public static final List<MotionPanelModel> allMotionPanelModelsList = new CopyOnWriteArrayList<>();
     public final List<ActionListener> deformationListeners = new CopyOnWriteArrayList<>();
     private static MotionPanelModel mainMotionPanelModel;
@@ -232,6 +233,11 @@ public class MotionPanelModel implements Collidable, Movable {
 
     public String getModelId() {
         return modelId;
+    }
+
+    @Override
+    public String getMotionPanelId() {
+        return "";
     }
 
     @Override

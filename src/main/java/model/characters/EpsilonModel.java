@@ -1,7 +1,9 @@
 package model.characters;
 
 import controller.UserInputHandler;
+import controller.constants.AbilityConstants;
 import model.Profile;
+import model.WaveManager;
 import model.collision.Collidable;
 import model.entities.AttackTypes;
 import model.movement.Direction;
@@ -136,6 +138,9 @@ public final class EpsilonModel extends GeoShapeModel implements LongRanged {
 
             if (UserInputHandler.getINSTANCE().isShootInd()) {
                 shoot(this, new Direction(relativeMouse), getDamageSize().get(AttackTypes.RANGED));
+                if (getDamageSize().get(AttackTypes.RANGED) == AbilityConstants.PHONOI_ABILITY_RANGED_DAMAGE.getValue()) {
+                    getDamageSize().put(AttackTypes.RANGED, Profile.getCurrent().getEpsilonRangedDamage());
+                }
                 UserInputHandler.getINSTANCE().setShootInd(false);
             }
 

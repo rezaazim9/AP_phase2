@@ -8,7 +8,6 @@ import java.awt.*;
 
 import static controller.constants.UIConstants.DEFAULT_FONT_SIZE;
 import static controller.constants.UIConstants.ORBITRON_FONT;
-import static view.containers.GlassFrame.getGlassFrame;
 
 public class Main {
 
@@ -21,7 +20,6 @@ public class Main {
                 UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
                 UIManager.getLookAndFeelDefaults().put("defaultFont", ORBITRON_FONT.deriveFont(DEFAULT_FONT_SIZE.getValue()));
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {throw new AWTError("Failed to set AWT settings");}
-            getGlassFrame();
             LoginPage.getINSTANCE().togglePanel();
         });
     }
